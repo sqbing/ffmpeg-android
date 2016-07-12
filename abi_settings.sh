@@ -6,26 +6,47 @@ BASEDIR=$2
 
 case $1 in
   armeabi-v7a)
-    NDK_ABI='arm'
+    NDK_ARCH='arm'
     NDK_TOOLCHAIN_ABI='arm-linux-androideabi'
+    NDK_CROSS_PREFIX="${NDK_TOOLCHAIN_ABI}"
+    CFLAGS="$CFLAGS -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16"
+    LDFLAGS="$LDFLAGS -march=armv7-a -Wl,--fix-cortex-a8"
+  ;;
+  armeabi)
+    NDK_ARCH='arm'
+    NDK_TOOLCHAIN_ABI='arm-linux-androideabi'
+    NDK_CROSS_PREFIX="${NDK_TOOLCHAIN_ABI}"
+  ;;
+  arm64-v8a)
+    NDK_ARCH='aarch64'
+    NDK_TOOLCHAIN_ABI='aarch64-linux-android'
     NDK_CROSS_PREFIX="${NDK_TOOLCHAIN_ABI}"
   ;;
   armeabi-v7a-neon)
-    NDK_ABI='arm'
+    NDK_ARCH='arm'
     NDK_TOOLCHAIN_ABI='arm-linux-androideabi'
     NDK_CROSS_PREFIX="${NDK_TOOLCHAIN_ABI}"
-    CFLAGS="${CFLAGS} -mfpu=neon"
+    CFLAGS="${CFLAGS} -march=armv7-a -mfloat-abi=softfp -mfpu=neon"
+    LDFLAGS="$LDFLAGS -march=armv7-a -Wl,--fix-cortex-a8"
   ;;
   x86)
-    NDK_ABI='x86'
+    NDK_ARCH='x86'
     NDK_TOOLCHAIN_ABI='x86'
     NDK_CROSS_PREFIX="i686-linux-android"
-    CFLAGS="$CFLAGS -march=i686"
+    CFLAGS="$CFLAGS -march=i686 -mtune=intel -mssse3 -mfpmath=sse -m32"
+  ;;
+  x86_64)
+    NDK_ARCH='x86_64'
+    NDK_TOOLCHAIN_ABI='x86_64'
+    NDK_CROSS_PREFIX="x86_64-linux-android"
+    CFLAGS="$CFLAGS -march=x86-64 -msse4.2 -mpopcnt -m64 -mtune=intel"
   ;;
 esac
+echo "$1"
 
 TOOLCHAIN_PREFIX=${BASEDIR}/toolchain-android
 if [ ! -d "$TOOLCHAIN_PREFIX" ]; then
+  echo "${ANDROID_NDK_ROOT_PATH}/build/tools/make-standalone-toolchain.sh --toolchain=${NDK_TOOLCHAIN_ABI}-${NDK_TOOLCHAIN_ABI_VERSION} --platform=android-${ANDROID_API_VERSION} --install-dir=${TOOLCHAIN_PREFIX}"
   ${ANDROID_NDK_ROOT_PATH}/build/tools/make-standalone-toolchain.sh --toolchain=${NDK_TOOLCHAIN_ABI}-${NDK_TOOLCHAIN_ABI_VERSION} --platform=android-${ANDROID_API_VERSION} --install-dir=${TOOLCHAIN_PREFIX}
 fi
 CROSS_PREFIX=${TOOLCHAIN_PREFIX}/bin/${NDK_CROSS_PREFIX}-

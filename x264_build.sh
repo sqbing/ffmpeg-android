@@ -7,15 +7,32 @@ pushd x264
 make clean
 
 case $1 in
-  armeabi-v7a | armeabi-v7a-neon)
+  armeabi-v7a | armeabi-v7a-neon | arm64-v8a)
     HOST=arm-linux
+  ;;
+  armeabi)
+    HOST=arm-linux-androideabi
   ;;
   x86)
     HOST=i686-linux
   ;;
+  x86_64)
+    HOST=x86_64-linux
+  ;;
 esac
 
 echo $CFLAGS
+
+echo "./configure \
+  --cross-prefix="$CROSS_PREFIX" \
+  --sysroot="$NDK_SYSROOT" \
+  --host="$HOST" \
+  --enable-pic \
+  --disable-asm \
+  --enable-static \
+  --disable-shared \
+  --prefix="${TOOLCHAIN_PREFIX}" \
+  --disable-cli || exit 1"
 
 ./configure \
   --cross-prefix="$CROSS_PREFIX" \
