@@ -35,3 +35,9 @@ Get in touch with us - http://www.writingminds.com
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/hiteshsondhi88/ffmpeg-android/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
+早起注
+---
+用不到那么多的功能，只留下了mpeg4, amrnb, h.264和aac的编解码功能，支持的文件格式也只留下了isom系。
+
+我在MAC上编译，顺手改了ncore和readlink的问题。
+
